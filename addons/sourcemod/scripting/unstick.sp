@@ -111,7 +111,7 @@ AttemptUnstick(client, bool:bUsePlayerCollision=true, const Float:flMins[3]=NULL
 	decl Float:flTargetPos[3];
 	GetClientAbsOrigin(client, flTargetPos);
 
-	if (!TestEntityPosition(client, flTargetPos))
+	if (!TestEntityPosition(client, flTargetPos, bUsePlayerCollision, flMins, flMaxs))
 	{
 		decl Float:flForward[3], Float:flRight[3], Float:flUp[3];
 		decl Float:flEyeAng[3];
@@ -121,11 +121,11 @@ AttemptUnstick(client, bool:bUsePlayerCollision=true, const Float:flMins[3]=NULL
 		NormalizeVector(flRight, flRight);
 		NormalizeVector(flUp, flUp);
 		
-		if (!FindPassableSpace(client, flForward, 1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) &&
+		if (!FindPassableSpace(client, flUp, 1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) && 
+			!FindPassableSpace(client, flUp, -1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) &&
+			!FindPassableSpace(client, flForward, 1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) &&
 			!FindPassableSpace(client, flRight, 1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) &&
 			!FindPassableSpace(client, flRight, -1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) &&
-			!FindPassableSpace(client, flUp, 1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) && 
-			!FindPassableSpace(client, flUp, -1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs) &&
 			!FindPassableSpace(client, flForward, -1.0, flTargetPos, bUsePlayerCollision, flMins, flMaxs))
 		{	
 			PrintToServer("Client %d failed to unstick at position %f %f %f", client, flTargetPos[0], flTargetPos[1], flTargetPos[2]);
