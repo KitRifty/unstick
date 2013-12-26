@@ -33,6 +33,7 @@ new bool:g_bAvoidTeammates;
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
 	RegPluginLibrary("unstick");
+	CreateNative("Unstick_TestPlayerPosition", Native_TestPlayerPosition);
 	CreateNative("Unstick_AttemptUnstick", Native_AttemptUnstick);
 	return APLRes_Success;
 }
@@ -215,6 +216,24 @@ stock bool:IsValidClient(client)
 	if (client <= 0 || client > MaxClients) return false;
 	if (!IsClientInGame(client)) return false;
 	return true;
+}
+
+public Native_TestPlayerPosition(Handle:plugin, numParams)
+{
+	new client = GetNativeCell(1);
+	if (!IsValidClient(client)) 
+	{
+		ThrowNativeError(SP_ERROR_PARAM, "Entity %d is not a valid client!", client);
+		return false;
+	}
+	
+	decl Float:flPos[3];
+	decl Float:flMins[3];
+	decl Float:flMaxs[3];
+	GetNativeArray(2, flPos, 3);
+	GetNativeArray(4, flMins, 3);
+	GetNativeArray(5, flMaxs, 3);
+	return TestEntityPosition(client, flPos, bool:GetNativeCell(3), flMins, flMaxs);
 }
 
 public Native_AttemptUnstick(Handle:plugin, numParams)
